@@ -117,33 +117,41 @@ public class Pirate_Pairs {
             createName(temp);
             players[i] = temp;
         }
+        System.out.println("For this game, you have to have a score under "+ (60 / playerAmount + 1));
         int turns = 1;
         while (playersIn(players) > 1){
             System.out.println("Turn " + turns + ":");
+            System.out.println();
             for (Player player : players){
-                turn(player, players.length);
-                System.out.print(player.getName() + "'s hand: ");
-                for (int card : player.getHand()){
-                    if (card != 0) {
-                        System.out.print(card + ", ");
-                    } else{
-                        break;
+                if (player.getStatus()){
+                    turn(player, players.length);
+                    System.out.print(player.getName() + "'s hand: ");
+                    for (int card : player.getHand()){
+                        if (card != 0) {
+                            System.out.print(card + ", ");
+                        } else{
+                            break;
+                        }
                     }
+                    System.out.println();
+                    System.out.println(player.getName() + " Score: " + player.getScore());
+                    System.out.println("-----------------------------------");
+                } else{
+                    System.out.println(player.getName() + " is out!");
+                    System.out.println("-----------------------------------");
                 }
-                System.out.println();
-                System.out.print("Discard Pile: ");
-                for (int discard : discardPile){
-                    if (discard != 0) {
-                        System.out.print(discard + ", ");
-                    } else{
-                        break;
-                    }
-                    
-                }
-                System.out.println();
-                System.out.println(player.getName() + " Score: " + player.getScore());
-                System.out.println("-----------------------------------");
             }
+            System.out.print("Discard Pile: ");
+            for (int discard : discardPile){
+                if (discard != 0) {
+                    System.out.print(discard + ", ");
+                } else{
+                    break;
+                }
+                
+            }
+            System.out.println();
+            System.out.println("-----------------------------------");
             turns++;
         }     
         for (Player player : players){
@@ -151,5 +159,6 @@ public class Pirate_Pairs {
                 System.out.println(player.getName() + " Wins!");
             }
         }
+        
     }
 }
