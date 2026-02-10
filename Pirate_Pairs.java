@@ -1,5 +1,6 @@
 import java.util.Scanner;
 public class Pirate_Pairs {
+    public static String[] names = {"Aiden", "Micah", "Kaden", "Henry", "Daniel", "Giada", "Pilar", "Ava", "Ainslie", "Isabella", "Liam", "Charlotte", "Elijah", "Amelia", "James", "Harper", "Benjamin", "Evelyn", "Daniel", "Grace"};
     public static int[] deck = shuffleDeck(createDeck());
     public static int deckSize = deck.length;
     public static int[] discardPile = new int[55];
@@ -26,6 +27,20 @@ public class Pirate_Pairs {
             deck[b] = temp;
         }
         return deck;
+    }
+    public static void createName(Player player){
+        int index = (int)(Math.random() * names.length);
+        player.updateName(names[index]);
+        String[] newNames = new String[names.length - 1];
+        int newIdx = 0;
+
+        for (int i = 0; i < names.length; i++) {
+            if (i != index) {
+                newNames[newIdx] = names[i];
+                newIdx++;
+            }
+        }
+        names = newNames;
     }
     public static void removeTopCard(){
         int[] newDeck = new int[deck.length - 1];
@@ -97,36 +112,44 @@ public class Pirate_Pairs {
         int playerAmount = sc.nextInt();
         sc.close();
         Player[] players = new Player[playerAmount]; 
-
-        Player player1 = new Player();
-        players[0] = player1;
+        for (int i = 0; i < playerAmount; i++){
+            Player temp = new Player();
+            createName(temp);
+            players[i] = temp;
+        }
         int turns = 1;
-        while (playersIn(players) > 0){
+        while (playersIn(players) > 1){
             System.out.println("Turn " + turns + ":");
-            turn(player1, players.length);
-            System.out.print("Player 1's hand: ");
-            for (int card : player1.getHand()){
-                if (card != 0) {
-                    System.out.print(card + ", ");
-                } else{
-                    break;
+            for (Player player : players){
+                turn(player, players.length);
+                System.out.print(player.getName() + "'s hand: ");
+                for (int card : player.getHand()){
+                    if (card != 0) {
+                        System.out.print(card + ", ");
+                    } else{
+                        break;
+                    }
                 }
-            }
-            System.out.println();
-            System.out.print("Discard Pile: ");
-            for (int discard : discardPile){
-                if (discard != 0) {
-                    System.out.print(discard + ", ");
-                } else{
-                    break;
+                System.out.println();
+                System.out.print("Discard Pile: ");
+                for (int discard : discardPile){
+                    if (discard != 0) {
+                        System.out.print(discard + ", ");
+                    } else{
+                        break;
+                    }
+                    
                 }
-                
+                System.out.println();
+                System.out.println(player.getName() + " Score: " + player.getScore());
+                System.out.println("-----------------------------------");
             }
-            System.out.println();
-            System.out.println("Player Score: " + player1.getScore());
-            System.out.println("-----------------------------------");
             turns++;
         }     
-        System.out.println("Cards remaining in deck: " + deckSize);
+        for (Player player : players){
+            if (player.getStatus()){
+                System.out.println(player.getName() + " Wins!");
+            }
+        }
     }
 }

@@ -1,9 +1,16 @@
 public class Player {
+    private String name;
     private int[] hand = new int[10];
     private int handSize;
     private int score;
     private boolean isIn = true;
 
+    public String getName(){
+        return name;
+    }
+    public void updateName(String n){
+        name = n;
+    }
     public int[] getHand(){
         return hand;
     }
