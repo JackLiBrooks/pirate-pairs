@@ -62,8 +62,7 @@ public class Pirate_Pairs {
                     }
                 } else{
                     break;
-                }
-                
+                } 
             } 
             if (!pair){
                 player.handUpdate(player.getHandSize(), drawnCard);
@@ -105,6 +104,22 @@ public class Pirate_Pairs {
         }
         return count;
     }
+    public static void printTie(Player[] players) {
+    String tieNames = "";
+    boolean first = true;
+
+    for (Player player : players) {
+        if (player.getStatus()) {
+            if (!first) {
+                tieNames += ", ";
+                tieNames += player.getName();
+            } else{
+                first = false;
+            }
+        }
+    }
+    System.out.println("It's a tie between " + tieNames + "!");
+}
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);  // Create a Scanner object
         System.out.print("How many players? ");
@@ -123,6 +138,14 @@ public class Pirate_Pairs {
             System.out.println("Turn " + turns + ":");
             System.out.println("-----------------------------------");
             for (Player player : players){
+                if (playersIn(players) == 1){
+                    break;
+                }
+                if (deck.length ==0){
+                    System.out.println("Deck is Out of Cards! ");
+                    printTie(players);
+                    System.exit(0);
+                }
                 turn(player, players.length);
                 if (player.getStatus()){
                     System.out.print(player.getName() + "'s hand: ");
@@ -152,7 +175,7 @@ public class Pirate_Pairs {
             System.out.println();
             System.out.println("-----------------------------------");
             turns++;
-        }     
+        }   
         for (Player player : players){
             if (player.getStatus()){
                 System.out.println(player.getName() + " Wins!");
