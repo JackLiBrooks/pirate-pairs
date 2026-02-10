@@ -107,7 +107,6 @@ public class Pirate_Pairs {
     public static void printTie(Player[] players) {
     String tieNames = "";
     boolean first = true;
-
     for (Player player : players) {
         if (player.getStatus()) {
             if (!first) {
