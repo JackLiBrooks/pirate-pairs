@@ -105,11 +105,11 @@ public class Pirate_Pairs {
         }
         return count;
     }
-
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);  // Create a Scanner object
-        System.out.println("How many players? ");
+        System.out.print("How many players? ");
         int playerAmount = sc.nextInt();
+        System.err.println();
         sc.close();
         Player[] players = new Player[playerAmount]; 
         for (int i = 0; i < playerAmount; i++){
@@ -121,10 +121,10 @@ public class Pirate_Pairs {
         int turns = 1;
         while (playersIn(players) > 1){
             System.out.println("Turn " + turns + ":");
-            System.out.println();
+            System.out.println("-----------------------------------");
             for (Player player : players){
+                turn(player, players.length);
                 if (player.getStatus()){
-                    turn(player, players.length);
                     System.out.print(player.getName() + "'s hand: ");
                     for (int card : player.getHand()){
                         if (card != 0) {
@@ -148,7 +148,6 @@ public class Pirate_Pairs {
                 } else{
                     break;
                 }
-                
             }
             System.out.println();
             System.out.println("-----------------------------------");
@@ -159,6 +158,5 @@ public class Pirate_Pairs {
                 System.out.println(player.getName() + " Wins!");
             }
         }
-        
     }
 }
