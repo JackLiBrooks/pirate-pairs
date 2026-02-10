@@ -1,6 +1,6 @@
 import java.util.Scanner;
 public class Pirate_Pairs {
-    public static String[] names = {"Aiden", "Micah", "Kaden", "Henry", "Daniel", "Giada", "Pilar", "Ava", "Ainslie", "Isabella", "Liam", "Charlotte", "Elijah", "Amelia", "James", "Harper", "Benjamin", "Evelyn", "Daniel", "Grace"};
+    public static String[] names = {"Aiden", "Micah", "Kaden", "Henry", "Daniel", "Giada", "Pilar", "Ava", "Ainslie", "Lorenzo", "Dave", "Suki", "Silje", "Pheobe", "Alder"};
     public static int[] deck = shuffleDeck(createDeck());
     public static int deckSize = deck.length;
     public static int[] discardPile = new int[55];
