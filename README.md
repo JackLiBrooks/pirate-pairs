@@ -6,7 +6,7 @@ Pirate Pairs is a turn-based card game where you draw cards and try **not** to d
 
 ### Goal
 
-Stay in the game as long as possible.
+Stay in the game as long as possible, and be the last one standing.
 
 ### Setup
 
