@@ -33,4 +33,4 @@ Stay in the game as long as possible.
 
 * Players will be eliminated once their score passes a limit (based on the number of players).
 * The game ends when only one player is still “in.”
-* If multiple players are still in by the time the deck runs out, the game is a tie between them.
+* If multiple players are still in by the time the deck runs out, the discard pile is recycled and becomes the deck.

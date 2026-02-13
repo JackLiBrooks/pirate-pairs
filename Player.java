@@ -1,15 +1,28 @@
 public class Player {
+    private String[] names = {"Aiden", "Micah", "Kaden", "Henry", "Daniel", "Giada", "Pilar", "Ava", "Ainslie", "Lorenzo", "Dave", "Suki", "Silje", "Pheobe", "Alder"};
     private String name;
     private int[] hand = new int[10];
     private int handSize;
     private int score;
     private boolean isIn = true;
+    
+    public Player() {
+        int index = (int)(Math.random() * names.length);
+        name = names[index];
+        String[] newNames = new String[names.length - 1];
+        int newIdx = 0;
 
+        for (int i = 0; i < names.length; i++) {
+            if (i != index) {
+                newNames[newIdx] = names[i];
+                newIdx++;
+            }
+        }
+        names = newNames;
+    }
+    
     public String getName(){
         return name;
-    }
-    public void updateName(String n){
-        name = n;
     }
     public int[] getHand(){
         return hand;
@@ -36,7 +49,9 @@ public class Player {
     public boolean getStatus(){
         return isIn;
     }
-    public void upateStatus(){
-        isIn = false;
+    public void endTurn(int playerAmount){
+        if (score > (60 / playerAmount + 1)){
+            isIn = false;
+        }
     }
 }
