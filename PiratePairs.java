@@ -2,10 +2,6 @@ import java.util.Scanner;
 public class PiratePairs {
     public static Dealer dealer = new Dealer(new Deck(), new DiscardPile());
     
-    public static void turn(Player player, int playerAmount){
-        dealer.drawCard(player);
-        player.endTurn(playerAmount);
-    }
     public static int playersIn(Player[] players){
         int count = 0;
         for (Player player : players){
@@ -16,7 +12,7 @@ public class PiratePairs {
         return count;
     }
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);  // Create a Scanner object
+        Scanner sc = new Scanner(System.in);
         System.out.print("How many players? ");
         int playerAmount = sc.nextInt();
         System.err.println();
@@ -35,7 +31,7 @@ public class PiratePairs {
                 if (playersIn(players) == 1){
                     break;
                 }
-                turn(player, players.length);
+                player.turn(dealer, players, dealer.getDiscardPile(), turns, playerAmount, player.getStrategy());
                 if (player.getStatus()){
                     System.out.print(player.getName() + "'s hand: ");
                     for (int card : player.getHand()){
@@ -61,7 +57,7 @@ public class PiratePairs {
         }   
         for (Player player : players){
             if (player.getStatus()){
-                System.out.println(player.getName() + " Wins!");
+                System.out.println(player.getName() + " Wins Using " + player.getStrategy());
                 break;
             }
         }

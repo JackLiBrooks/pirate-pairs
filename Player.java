@@ -1,6 +1,8 @@
 public class Player {
-    private String[] names = {"Aiden", "Micah", "Kaden", "Henry", "Daniel", "Giada", "Pilar", "Ava", "Ainslie", "Lorenzo", "Dave", "Suki", "Silje", "Pheobe", "Alder"};
+    private static String[] names = {"Aiden", "Micah", "Kaden", "Henry", "Daniel", "Giada", "Pilar", "Ava", "Ainslie", "Lorenzo", "Dave", "Suki", "Silje", "Pheobe", "Alder"};
+    private String[] strategies = {"strategy1", "strategy2", "strategy3"};
     private String name;
+    private String strategy;
     private int[] hand = new int[10];
     private int handSize;
     private int score;
@@ -19,10 +21,16 @@ public class Player {
             }
         }
         names = newNames;
+        
+        index = (int)(Math.random() * strategies.length);
+        strategy = strategies[index];
     }
     
     public String getName(){
         return name;
+    }
+    public String getStrategy(){
+        return strategy;
     }
     public int[] getHand(){
         return hand;
@@ -52,6 +60,95 @@ public class Player {
     public void endTurn(int playerAmount){
         if (score > (60 / playerAmount + 1)){
             isIn = false;
+        }
+    }
+    public void takeCard(Player[] players, DiscardPile discardPile) {
+        if (isIn){
+            Player fromPlayer = null;
+            int fromIndex = -1;
+            int smallest = 10;
+            for (Player p : players) {
+                if (p.getStatus() && p != this){
+                    for (int i = 0; i < p.getHandSize(); i++) {
+                        int card = p.getHand()[i];
+                        if (card < smallest) {
+                            smallest = card;
+                            fromPlayer = p;
+                            fromIndex = i;
+                        }
+                    }
+                } 
+            }
+            if (fromPlayer != null){
+                updateScore(smallest);
+                for (int i = 0; i < handSize; i++) {
+                    discardPile.add(hand[i]);
+                }
+                clearHand();
+                int[] hand = fromPlayer.getHand();
+                for (int i = fromIndex; i < fromPlayer.getHandSize() - 1; i++) {
+                    hand[i] = hand[i + 1];
+                }
+                hand[fromPlayer.getHandSize() - 1] = 0;
+                fromPlayer.handSizeUpdate(fromPlayer.getHandSize() - 1);
+                discardPile.add(smallest);
+            }
+        }
+    }
+    public void turn(Dealer dealer, Player[] players, DiscardPile discardPile, int turn, int playerAmount, String Strategy){
+        if (turn !=1){
+            if (strategy.contains("1")){ // strategy 1 is to draw everytime
+                dealer.dealCard(this);
+                endTurn(playerAmount);
+            } else if (strategy.contains("2")){
+                if (turn % 2 == 0){
+                    this.takeCard(players, discardPile);
+                    endTurn(playerAmount);
+                } else{
+                    dealer.dealCard(this);
+                    endTurn(playerAmount);
+                }
+            } else{
+                boolean hasDuplicate = false;
+                for (int card : hand){
+                    for (Player p : players){
+                        if (!hasDuplicate){
+                            if (p.getStatus() && p != this){
+                                if (!hasDuplicate){
+                                    for (int c : p.getHand()){
+                                        if (c == card){
+                                            hasDuplicate = true;
+                                            break;
+                                        }
+                                    }
+                                } else{
+                                    break;
+                                }
+                            }
+                        }else {
+                            break;
+                        }
+                    }
+                    if (hasDuplicate == false){
+                        for (int n : discardPile.contents()){
+                            if (n == card){
+                                hasDuplicate = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (hasDuplicate){
+                        dealer.dealCard(this);
+                        endTurn(playerAmount);
+                    } else{
+                        takeCard(players, discardPile);
+                        endTurn(playerAmount);
+                    }  
+                }
+            }
+        } else{
+            dealer.dealCard(this);
+            endTurn(playerAmount);
         }
     }
 }

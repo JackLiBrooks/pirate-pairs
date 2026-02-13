@@ -20,7 +20,7 @@ public class Dealer {
             deck.shuffleDeck();
         }
     }
-    public void drawCard(Player player) {
+    public void dealCard(Player player) {
         if (player.getStatus()){
             ensureDeckHasCards();
             int drawnCard = deck.drawTop();
@@ -41,36 +41,6 @@ public class Dealer {
                 }
                 player.updateScore(drawnCard);
                 player.clearHand();
-            }
-        }
-    }
-    public static void takeCard(Player taker, Player[] players, DiscardPile discardPile) {
-        if (taker.getStatus()){
-            Player fromPlayer = null;
-            int fromIndex = -1;
-            int smallest = 10;
-            for (Player p : players) {
-                if (p.getStatus() && p != taker){
-                    for (int i = 0; i < p.getHandSize(); i++) {
-                        int card = p.getHand()[i];
-                        if (card < smallest) {
-                            smallest = card;
-                            fromPlayer = p;
-                            fromIndex = i;
-                        }
-                    }
-                } 
-            }
-            if (fromPlayer != null){
-                taker.updateScore(smallest);
-                taker.clearHand();
-                int[] hand = fromPlayer.getHand();
-                for (int i = fromIndex; i < fromPlayer.getHandSize() - 1; i++) {
-                    hand[i] = hand[i + 1];
-                }
-                hand[fromPlayer.getHandSize() - 1] = 0;
-                fromPlayer.handSizeUpdate(fromPlayer.getHandSize() - 1);
-                discardPile.add(smallest);
             }
         }
     }
