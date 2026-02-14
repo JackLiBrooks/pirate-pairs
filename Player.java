@@ -1,6 +1,6 @@
 public class Player {
     private static String[] names = {"Aiden", "Micah", "Kaden", "Henry", "Daniel", "Giada", "Pilar", "Ava", "Ainslie", "Lorenzo", "Dave", "Suki", "Silje", "Pheobe", "Alder"};
-    private String[] strategies = {"strategy1", "strategy2", "strategy3"};
+    private static String[] strategies = {"strategy1", "strategy2", "strategy3"};
     private String name;
     private String strategy;
     private int[] hand = new int[10];
@@ -22,8 +22,22 @@ public class Player {
         }
         names = newNames;
         
+        if (strategies.length == 0){
+            String[] original = {"strategy1", "strategy2", "strategy3"};
+            strategies = original; 
+        }
         index = (int)(Math.random() * strategies.length);
         strategy = strategies[index];
+        String[] newStrategies = new String[strategies.length - 1];
+        newIdx = 0;
+        for (int i = 0; i < strategies.length; i++) {
+            if (i != index) {
+                newStrategies[newIdx] = strategies[i];
+                newIdx++;
+            }
+        }
+        strategies = newStrategies;
+        
     }
     
     public String getName(){
@@ -62,7 +76,7 @@ public class Player {
             isIn = false;
         }
     }
-    public void takeCard(Player[] players, DiscardPile discardPile) {
+    private void takeCard(Player[] players, DiscardPile discardPile) {
         if (isIn){
             Player fromPlayer = null;
             int fromIndex = -1;
@@ -95,13 +109,30 @@ public class Player {
             }
         }
     }
+    public int checkLowestCard(Player[] players, DiscardPile discardPile){
+        int smallest = 10;
+        for (Player p : players) {
+            if (p.getStatus() && p != this){
+                for (int i = 0; i < p.getHandSize(); i++) {
+                    int card = p.getHand()[i];
+                    if (card < smallest) {
+                        smallest = card;
+                    }
+                }
+            } 
+        }
+        return smallest;
+    }
+
+    // Need to change the stratagies to only take if the lowest card is smaller than a certain number, otherwise the person who only draws will pretty much always win.
     public void turn(Dealer dealer, Player[] players, DiscardPile discardPile, int turn, int playerAmount, String Strategy){
         if (turn !=1){
+            System.out.println("Smallest: " + this.checkLowestCard(players, discardPile));
             if (strategy.contains("1")){ // strategy 1 is to draw everytime
                 dealer.dealCard(this);
                 endTurn(playerAmount);
             } else if (strategy.contains("2")){
-                if (turn % 2 == 0){
+                if (turn % 2 == 0 && this.checkLowestCard(players, discardPile) < 6){
                     this.takeCard(players, discardPile);
                     endTurn(playerAmount);
                 } else{
@@ -137,7 +168,7 @@ public class Player {
                             }
                         }
                     }
-                    if (hasDuplicate){
+                    if (hasDuplicate || this.checkLowestCard(players, discardPile) >= 6){
                         dealer.dealCard(this);
                         endTurn(playerAmount);
                     } else{

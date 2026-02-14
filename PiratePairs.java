@@ -42,6 +42,7 @@ public class PiratePairs {
                         }
                     }
                     System.out.println();
+                    System.out.println(player.getName() + "'s Strategy: " + player.getStrategy());
                     System.out.println(player.getName() + " Score: " + player.getScore());
                     System.out.println("-----------------------------------");
                 } else{
