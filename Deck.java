@@ -1,56 +1,51 @@
 public class Deck {
     private int[] cards;
 
-    public Deck() {
+    public Deck(){
         reset();
     }
 
-    public void reset() {
+    public void reset(){
         cards = createDeck();
         shuffleDeck();
     }
-    private int[] createDeck() {
+    private int[] createDeck(){
         int[] deck = new int[55];
         int index = 0;
-        for (int i = 1; i <= 10; i++) {
-            for (int j = 0; j < i; j++) {
+        for (int i = 1; i <= 10; i++){
+            for (int j = 0; j < i; j++){
                 deck[index] = i;
                 index++;
             }
         }
         return deck;
     }
-    public void shuffleDeck(){
-        for (int k = 0; k < 10000; k++) {
-            int a = (int)(Math.random() * cards.length);
-            int b = (int)(Math.random() * cards.length);
-
-            int temp = cards[a];
-            cards[a] = cards[b];
-            cards[b] = temp;
+    public void shuffleDeck(){ //fisher yates shuffle
+        for (int i = cards.length - 1; i > 0; i--){
+            int j = (int)(Math.random() * (i + 1));
+            int temp = cards[i];
+            cards[i] = cards[j];
+            cards[j] = temp;
         }
     }
-    public int size() {
+
+    public int size(){
         return cards.length;
     }
-    public boolean isEmpty() {
+    public boolean isEmpty(){
         return cards.length == 0;
     }
-    public int drawTop() {
+    public int drawTop(){
         int top = cards[0];
         int[] newCards = new int[cards.length - 1];
-        for (int i = 1; i < cards.length; i++) {
+        for (int i = 1; i < cards.length; i++){
             newCards[i - 1] = cards[i];
         }
         cards = newCards;
         return top;
     }
     public int[] recycleDiscards(int[] discards){
-        int index = 0;
-        for (int card : discards){
-            cards[index] = card;
-            index++;
-        }
+        cards = discards;
         return cards;
     }
 }

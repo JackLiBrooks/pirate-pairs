@@ -8,14 +8,14 @@ public class Player {
     private int score;
     private boolean isIn = true;
     
-    public Player() {
+    public Player(){
         int index = (int)(Math.random() * names.length);
         name = names[index];
         String[] newNames = new String[names.length - 1];
         int newIdx = 0;
 
-        for (int i = 0; i < names.length; i++) {
-            if (i != index) {
+        for (int i = 0; i < names.length; i++){
+            if (i != index){
                 newNames[newIdx] = names[i];
                 newIdx++;
             }
@@ -30,8 +30,8 @@ public class Player {
         strategy = strategies[index];
         String[] newStrategies = new String[strategies.length - 1];
         newIdx = 0;
-        for (int i = 0; i < strategies.length; i++) {
-            if (i != index) {
+        for (int i = 0; i < strategies.length; i++){
+            if (i != index){
                 newStrategies[newIdx] = strategies[i];
                 newIdx++;
             }
@@ -47,7 +47,11 @@ public class Player {
         return strategy;
     }
     public int[] getHand(){
-        return hand;
+        int[] noZeros = new int[handSize];
+        for (int i = 0; i < handSize; i++){
+            noZeros[i] = hand[i];
+        }
+        return noZeros;
     }
     public void handUpdate(int index, int numb){
         hand[index] = numb;
@@ -76,16 +80,34 @@ public class Player {
             isIn = false;
         }
     }
-    private void takeCard(Player[] players, DiscardPile discardPile) {
+    public void resetScore(){
+        score = 0;
+    }
+    public void resetForNewGame(){
+        clearHand();
+        resetScore();
+        isIn = true;
+    }
+
+    public int HighestCardInHand(){
+        int highest = hand[0];
+        for (int i = 1; i < handSize; i++){
+            if (hand[i] > highest){
+                highest = hand[i];
+            }
+        }
+        return highest;
+    }
+    private void takeCard(Player[] players, DiscardPile discardPile, String doOutputs){
         if (isIn){
             Player fromPlayer = null;
             int fromIndex = -1;
             int smallest = 10;
-            for (Player p : players) {
+            for (Player p : players){
                 if (p.getStatus() && p != this){
-                    for (int i = 0; i < p.getHandSize(); i++) {
+                    for (int i = 0; i < p.getHandSize(); i++){
                         int card = p.getHand()[i];
-                        if (card < smallest) {
+                        if (card < smallest){
                             smallest = card;
                             fromPlayer = p;
                             fromIndex = i;
@@ -94,13 +116,16 @@ public class Player {
                 } 
             }
             if (fromPlayer != null){
+                if (doOutputs.equals("yes")){
+                    System.out.println("The card " + smallest + " has been taken!");
+                }
                 updateScore(smallest);
-                for (int i = 0; i < handSize; i++) {
+                for (int i = 0; i < handSize; i++){
                     discardPile.add(hand[i]);
                 }
                 clearHand();
                 int[] hand = fromPlayer.getHand();
-                for (int i = fromIndex; i < fromPlayer.getHandSize() - 1; i++) {
+                for (int i = fromIndex; i < fromPlayer.getHandSize() - 1; i++){
                     hand[i] = hand[i + 1];
                 }
                 hand[fromPlayer.getHandSize() - 1] = 0;
@@ -109,13 +134,13 @@ public class Player {
             }
         }
     }
-    public int checkLowestCard(Player[] players, DiscardPile discardPile){
+    private int checkLowestCard(Player[] players, DiscardPile discardPile){
         int smallest = 10;
-        for (Player p : players) {
+        for (Player p : players){
             if (p.getStatus() && p != this){
-                for (int i = 0; i < p.getHandSize(); i++) {
+                for (int i = 0; i < p.getHandSize(); i++){
                     int card = p.getHand()[i];
-                    if (card < smallest) {
+                    if (card < smallest){
                         smallest = card;
                     }
                 }
@@ -123,62 +148,74 @@ public class Player {
         }
         return smallest;
     }
-
-    // Need to change the stratagies to only take if the lowest card is smaller than a certain number, otherwise the person who only draws will pretty much always win.
-    public void turn(Dealer dealer, Player[] players, DiscardPile discardPile, int turn, int playerAmount, String Strategy){
-        if (turn !=1){
-            System.out.println("Smallest: " + this.checkLowestCard(players, discardPile));
-            if (strategy.contains("1")){ // strategy 1 is to draw everytime
-                dealer.dealCard(this);
-                endTurn(playerAmount);
-            } else if (strategy.contains("2")){
-                if (turn % 2 == 0 && this.checkLowestCard(players, discardPile) < 6){
-                    this.takeCard(players, discardPile);
-                    endTurn(playerAmount);
+    private double chanceOfDrawingACardInHand(Player[] players, DiscardPile discardPile, Dealer dealer){
+        double probability = 0.0;
+        for (int card : hand){
+            double appearences = 1;
+            for (Player p : players){
+                if (p.getStatus() && p != this){
+                    for (int c : p.getHand()){
+                        if (c == card){
+                            appearences ++;
+                        }
+                    }
                 } else{
-                    dealer.dealCard(this);
-                    endTurn(playerAmount);
-                }
-            } else{
-                boolean hasDuplicate = false;
-                for (int card : hand){
-                    for (Player p : players){
-                        if (!hasDuplicate){
-                            if (p.getStatus() && p != this){
-                                if (!hasDuplicate){
-                                    for (int c : p.getHand()){
-                                        if (c == card){
-                                            hasDuplicate = true;
-                                            break;
-                                        }
-                                    }
-                                } else{
-                                    break;
-                                }
-                            }
-                        }else {
-                            break;
-                        }
-                    }
-                    if (hasDuplicate == false){
-                        for (int n : discardPile.contents()){
-                            if (n == card){
-                                hasDuplicate = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (hasDuplicate || this.checkLowestCard(players, discardPile) >= 6){
-                        dealer.dealCard(this);
-                        endTurn(playerAmount);
-                    } else{
-                        takeCard(players, discardPile);
-                        endTurn(playerAmount);
-                    }  
+                    continue;
                 }
             }
+            for (int n : discardPile.contents()){
+                if (n == card){
+                    appearences ++;
+                }
+            }
+            probability += ((card - appearences) / dealer.getDeckSize());
+        }
+        return probability;
+    }
+    private void strategyOne(Player[] players, Dealer dealer, DiscardPile discardPile, int turn, int playerAmount, String doOutputs){
+        if (turn % 2 == 0 && this.checkLowestCard(players, discardPile) < 6){
+            this.takeCard(players, discardPile, doOutputs);
+            endTurn(playerAmount);
         } else{
-            dealer.dealCard(this);
+            dealer.dealCard(this, doOutputs);
+            endTurn(playerAmount);
+        }
+    }
+    private void strategyTwo(Player[] players, Dealer dealer, DiscardPile discardPile, int playerAmount, String doOutputs){
+        double probability = chanceOfDrawingACardInHand(players, discardPile, dealer);
+        if (probability > 0.50){
+            takeCard(players, discardPile, doOutputs);
+            endTurn(playerAmount);
+        } else{
+            dealer.dealCard(this, doOutputs);
+            endTurn(playerAmount);
+        }
+    }
+    private void strategyThree(Player[] players, Dealer dealer, DiscardPile discardPile, int playerAmount, String doOutputs){
+        double probability = chanceOfDrawingACardInHand(players, discardPile, dealer);
+        boolean takenCardWillBeLessThanHighestCardInHand = false;
+        if (this.checkLowestCard(players, discardPile) < this.HighestCardInHand()){
+            takenCardWillBeLessThanHighestCardInHand = true;
+        }
+        if (probability > 0.40 && takenCardWillBeLessThanHighestCardInHand){
+            takeCard(players, discardPile, doOutputs);
+            endTurn(playerAmount);
+        } else{
+            dealer.dealCard(this, doOutputs);
+            endTurn(playerAmount);
+        }
+    }
+    public void turn(Dealer dealer, Player[] players, DiscardPile discardPile, int turn, int playerAmount, String Strategy, String doOutputs){
+        if (this.handSize != 0){
+            if (strategy.contains("1")){ // alternates drawing and taking if lowest card is < 6
+                strategyOne(players, dealer, discardPile, turn, playerAmount, doOutputs);
+            } else if (strategy.contains("2")){ // takes card if drawing card in hand is greater than 50%
+                strategyTwo(players, dealer, discardPile, playerAmount, doOutputs);
+            } else{ // takes card if drawing card in hand is greater than 40% and the taken card is smaller that cards in hand
+                strategyThree(players, dealer, discardPile, playerAmount, doOutputs);
+            }
+        } else{
+            dealer.dealCard(this, doOutputs);
             endTurn(playerAmount);
         }
     }
