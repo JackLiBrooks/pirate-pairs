@@ -89,7 +89,7 @@ public class Player {
         isIn = true;
     }
 
-    public int HighestCardInHand(){
+    public int highestCardInHand(){
         int highest = hand[0];
         for (int i = 1; i < handSize; i++){
             if (hand[i] > highest){
@@ -183,7 +183,7 @@ public class Player {
     }
     private void strategyTwo(Player[] players, Dealer dealer, DiscardPile discardPile, int playerAmount, String doOutputs){
         double probability = chanceOfDrawingACardInHand(players, discardPile, dealer);
-        if (probability > 0.50){
+        if (probability > 0.40){
             takeCard(players, discardPile, doOutputs);
             endTurn(playerAmount);
         } else{
@@ -194,7 +194,7 @@ public class Player {
     private void strategyThree(Player[] players, Dealer dealer, DiscardPile discardPile, int playerAmount, String doOutputs){
         double probability = chanceOfDrawingACardInHand(players, discardPile, dealer);
         boolean takenCardWillBeLessThanHighestCardInHand = false;
-        if (this.checkLowestCard(players, discardPile) < this.HighestCardInHand()){
+        if (this.checkLowestCard(players, discardPile) < this.highestCardInHand()){
             takenCardWillBeLessThanHighestCardInHand = true;
         }
         if (probability > 0.40 && takenCardWillBeLessThanHighestCardInHand){

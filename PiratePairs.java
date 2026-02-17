@@ -33,7 +33,6 @@ public class PiratePairs {
         sc.nextLine();
         System.out.print("Do you want a turn by turn breakdown? ");
         String doOutputs = sc.nextLine().trim();
-        System.out.println();
         sc.close();
         Player[] players = new Player[playerAmount]; 
         for (int i = 0; i < playerAmount; i++){
@@ -42,6 +41,7 @@ public class PiratePairs {
         }
         String[] winners = new String[gamesPlaying];
         if (doOutputs.toLowerCase().equals("yes")){
+            System.out.println();
             for (int i = 0; i < gamesPlaying; i ++){
                 int turns = 1;
                 while (playersIn(players) > 1){
@@ -125,6 +125,7 @@ public class PiratePairs {
         }
         int[] strategyCounts = {strategy1Count, strategy2Count, strategy3Count};
         int bestIndex = greatestValueStrategy(strategyCounts);
+        System.out.println();
         System.out.println("The strategies with the most wins was Strategy " + (bestIndex + 1) + " with " + strategyCounts[bestIndex] + " wins!");
     }
 }
